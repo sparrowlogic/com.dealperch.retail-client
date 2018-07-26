@@ -1,0 +1,26 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite
+                name="Retail API Client"
+        >
+            <directory>test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist
+                processUncoveredFilesFromWhitelist="true"
+        >
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html"
+             target="./test/log/codeCoverage"
+             showUncoveredFiles="false"
+        />
+        <log
+                type="coverage-clover"
+                target="./test/log/coverage.xml"
+        />
+    </logging>
+</phpunit>

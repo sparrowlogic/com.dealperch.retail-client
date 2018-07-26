@@ -1,0 +1,5 @@
+.idea
+vendor
+test/log
+/test/credentials.cache
+/test/retail.log
