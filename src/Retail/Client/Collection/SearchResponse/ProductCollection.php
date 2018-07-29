@@ -53,7 +53,7 @@ final class ProductCollection implements \Iterator, \JsonSerializable, \Countabl
     {
         $out = [];
         /**
-         * @var ProductSearchResponseDTO $datum
+         * @var Product $datum
          */
         foreach ($this->data as $datum) {
             array_push($out, $datum->jsonSerialize());

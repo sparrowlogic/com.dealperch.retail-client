@@ -22,7 +22,7 @@ final class Product implements \JsonSerializable
     private $GTIN;
 
     /**
-     * @var ShortSupplierDTO
+     * @var Supplier
      */
     private $supplierDTO;
 
@@ -113,9 +113,9 @@ final class Product implements \JsonSerializable
     }
 
     /**
-     * @return ShortSupplierDTO
+     * @return Supplier
      */
-    public function getSupplierDTO(): ShortSupplierDTO
+    public function getSupplierDTO(): Supplier
     {
         return $this->supplierDTO;
     }

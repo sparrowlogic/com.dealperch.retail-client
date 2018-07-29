@@ -46,6 +46,31 @@ final class SearchResponse implements \JsonSerializable
         return new SearchResponse($internalResults, $externalResults, $summaryProductIdentifiers);
     }
 
+    /**
+     * @return ProductCollection
+     */
+    public function getInternalResults(): ProductCollection
+    {
+        return $this->internalResults;
+    }
+
+    /**
+     * @return ProductCollection
+     */
+    public function getExternalResults(): ProductCollection
+    {
+        return $this->externalResults;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSummaryProductIdentifiers(): array
+    {
+        return $this->summaryProductIdentifiers;
+    }
+
+
     public function jsonSerialize(): array
     {
         return [

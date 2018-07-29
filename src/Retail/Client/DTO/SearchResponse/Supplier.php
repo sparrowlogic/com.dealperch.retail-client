@@ -9,7 +9,7 @@
 namespace DealPerch\Retail\Client\DTO\SearchResponse;
 
 
-use DealPerch\Retail\ValueObject\DistanceCalculation;
+use DealPerch\Retail\Client\Traits\DistanceCalculation;
 
 /**
  * Class Supplier
@@ -66,14 +66,12 @@ class Supplier implements \JsonSerializable
         string $id,
         string $displayName,
         ?string $logoURL,
-        ?DistanceCalculation $distanceCalculation = null,
         string $supplierType = self::LOCAL_AND_ONLINE
     )
     {
         $this->id = $id;
         $this->displayName = $displayName;
         $this->logoURL = $logoURL;
-        $this->distance = $distanceCalculation;
         if (!in_array($supplierType, self::SUPPLIER_TYPES)) {
             throw new \InvalidArgumentException('provided supplier type is not one of the following: ' . json_encode(self::SUPPLIER_TYPES));
         }
@@ -119,8 +117,6 @@ class Supplier implements \JsonSerializable
             'id' => $this->getId(),
             'displayName' => $this->getDisplayName(),
             'logoURL' => $this->getLogoURL(),
-            'distance' => $this->distance,
-            'location' => ($this->distance instanceof DistanceCalculation ? $this->distance->getEndLocation()->toArray() : null),
             'supplier_type' => $this->supplierType
         ];
     }
