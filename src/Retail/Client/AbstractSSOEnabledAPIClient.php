@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
+use Ramsey\Uuid\UuidInterface;
 
 abstract class AbstractSSOEnabledAPIClient
 {
@@ -120,6 +121,14 @@ abstract class AbstractSSOEnabledAPIClient
                     'password' => $this->getConfiguration()->getPWGrantPassword()
                 ];
                 break;
+
+            case 'trusted':
+                $grantOptions = [
+                    'id' => ($this->getConfiguration()->getTrustedGrantUserIdToImpersonate() instanceof
+                    UuidInterface ? $this->getConfiguration()->getTrustedGrantUserIdToImpersonate()->toString() : null)
+                ];
+                break;
+
             default:
                 $grantOptions = [];
         }
