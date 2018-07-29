@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DealPerch\Retail\Client;
 
-use DealPerch\Retail\Client\Grant\Trusted;
+use DealPerch\Retail\Client\Grant\TrustedGrant;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -150,7 +150,7 @@ abstract class AbstractSSOEnabledAPIClient
                 break;
 
             case 'trusted':
-                $grant = new Trusted();
+                $grant = new TrustedGrant();
                 $grantOptions = [
                     'id' => ($this->getImpersonatingUserId() instanceof UuidInterface ? $this->getImpersonatingUserId()->toString() : null)
                 ];

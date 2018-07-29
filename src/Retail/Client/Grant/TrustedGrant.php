@@ -7,7 +7,7 @@ namespace DealPerch\Retail\Client\Grant;
  *
  *
  */
-class Trusted extends AbstractGrant
+class TrustedGrant extends AbstractGrant
 {
     /**
      * @inheritdoc
