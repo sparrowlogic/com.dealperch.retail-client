@@ -2,6 +2,8 @@
 
 namespace DealPerch\Retail\Client\Grant;
 
+use League\OAuth2\Client\Grant\AbstractGrant;
+
 /**
  * Represents a trusted (client-credentials) grant for supporting User Impersonation via API Service.
  *
