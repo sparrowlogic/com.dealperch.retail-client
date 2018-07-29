@@ -161,7 +161,7 @@ abstract class AbstractSSOEnabledAPIClient
         }
 
         if (!$this->credentials instanceof AccessToken) {
-            $accessToken = $this->getAuthProvider()->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(), $grantOptions);
+            $accessToken = $this->getAuthProvider()->getAccessToken(($grant ?? $this->getConfiguration()->getGrantType()), $grantOptions);
             $this->credentials = $accessToken;
             $this->cacheCredentials(json_encode($accessToken->jsonSerialize(), JSON_PRETTY_PRINT));
         }
