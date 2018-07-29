@@ -56,7 +56,9 @@ abstract class AbstractSSOEnabledAPIClient
      */
     public function updateUserIdToImpersonate(UuidInterface $userId): void
     {
-        $this->forceClearCredentials();
+        if (!$userId->equals($this->impersonateUserId)) {
+            $this->forceClearCredentials();
+        }
         $this->impersonateUserId = $userId;
     }
 
@@ -161,14 +163,14 @@ abstract class AbstractSSOEnabledAPIClient
         }
 
         if (!$this->credentials instanceof AccessToken) {
-            $accessToken = $this->getAuthProvider()->getAccessToken(($grant ?? $this->getConfiguration()->getGrantType()), $grantOptions);
+            $accessToken = $this->getAuthProvider()->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(), $grantOptions);
             $this->credentials = $accessToken;
             $this->cacheCredentials(json_encode($accessToken->jsonSerialize(), JSON_PRETTY_PRINT));
         }
 
 // validate the credentials aren't expired. If they are, refresh.
         if ($this->credentials->hasExpired()) {
-            $accessToken = $this->authProvider->getAccessToken($this->getConfiguration()->getGrantType(), $grantOptions);
+            $accessToken = $this->authProvider->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(), $grantOptions);
             $this->credentials = $accessToken;
             $this->cacheCredentials(json_encode($accessToken->jsonSerialize(), JSON_PRETTY_PRINT));
         }
