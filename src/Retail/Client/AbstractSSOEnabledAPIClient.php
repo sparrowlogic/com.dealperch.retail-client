@@ -31,6 +31,11 @@ abstract class AbstractSSOEnabledAPIClient
      */
     private $credentials;
 
+    /**
+     * @var UuidInterface|null
+     */
+    private $impersonateUserId;
+
     public function getConfiguration(): Configuration
     {
         return $this->configuration;
@@ -42,6 +47,27 @@ abstract class AbstractSSOEnabledAPIClient
     public function getAuthProvider(): AbstractProvider
     {
         return $this->authProvider;
+    }
+
+    /**
+     * @param UuidInterface $userId
+     * @abstract works for trusted grant type
+     */
+    public function updateUserIdToImpersonate(UuidInterface $userId): void
+    {
+        $this->forceClearCredentials();
+        $this->impersonateUserId = $userId;
+    }
+
+    public function getImpersonatingUserId(): ?UuidInterface
+    {
+        return $this->impersonateUserId;
+    }
+
+    public function forceClearCredentials(): void
+    {
+        $this->credentials = null;
+        $this->cacheCredentials('');
     }
 
 
@@ -124,8 +150,7 @@ abstract class AbstractSSOEnabledAPIClient
 
             case 'trusted':
                 $grantOptions = [
-                    'id' => ($this->getConfiguration()->getTrustedGrantUserIdToImpersonate() instanceof
-                    UuidInterface ? $this->getConfiguration()->getTrustedGrantUserIdToImpersonate()->toString() : null)
+                    'id' => ($this->getImpersonatingUserId() instanceof UuidInterface ? $this->getImpersonatingUserId()->toString() : null)
                 ];
                 break;
 

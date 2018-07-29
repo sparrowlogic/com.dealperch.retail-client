@@ -29,8 +29,6 @@ class Configuration
 
     private $PWGrantPassword;
 
-    private $trustedGrantUserIdToImpersonate;
-
     /**
      * Configuration constructor.
      * @param string $credentialCachePath
@@ -39,9 +37,8 @@ class Configuration
      * @param string $grantType
      * @param string|null $PWGrantUsername
      * @param string|null $PWGrantPassword
-     * @param UuidInterface|null $trustedGrantUserIdToImpersonate
      */
-    public function __construct($credentialCachePath, $retailBaseURL, $SSOBaseURL, $grantType, string $PWGrantUsername = null, string $PWGrantPassword = null, UuidInterface $trustedGrantUserIdToImpersonate = null)
+    public function __construct($credentialCachePath, $retailBaseURL, $SSOBaseURL, $grantType, string $PWGrantUsername = null, string $PWGrantPassword = null)
     {
         if (!file_exists($credentialCachePath)) {
             $handle = fopen($credentialCachePath, 'x');
@@ -56,7 +53,6 @@ class Configuration
         $this->SSOBaseURL = $SSOBaseURL;
         $this->PWGrantUsername = $PWGrantUsername;
         $this->PWGrantPassword = $PWGrantPassword;
-        $this->trustedGrantUserIdToImpersonate = $trustedGrantUserIdToImpersonate;
 
         if (!in_array($grantType, static::VALID_GRANT_TYPES)) {
             throw new \RuntimeException(static::EXC_GRANT_TYPE_INVALID_MSG);
@@ -110,13 +106,5 @@ class Configuration
     public function getPWGrantPassword(): ?string
     {
         return $this->PWGrantPassword;
-    }
-
-    /**
-     * @return null|UuidInterface
-     */
-    public function getTrustedGrantUserIdToImpersonate(): ?UuidInterface
-    {
-        return $this->trustedGrantUserIdToImpersonate;
     }
 }
