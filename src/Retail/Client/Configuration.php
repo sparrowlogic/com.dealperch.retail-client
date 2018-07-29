@@ -11,9 +11,9 @@ namespace DealPerch\Retail\Client;
 
 class Configuration
 {
-    const EXC_GRANT_TYPE_INVALID_MSG = 'An invalid grant type was provided. Valid grant types are: "client_credentials", "authorization_code", "password"';
+    const EXC_GRANT_TYPE_INVALID_MSG = 'An invalid grant type was provided. Valid grant types are: "client_credentials", "authorization_code", "password", "trusted"';
 
-    const VALID_GRANT_TYPES = ['client_credentials', 'authorization_code', 'password'];
+    const VALID_GRANT_TYPES = ['client_credentials', 'authorization_code', 'password', 'trusted'];
 
     private $credentialCachePath;
 
