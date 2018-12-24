@@ -24,7 +24,7 @@ class RetailTest extends TestCase
     public function setUp()
     {
 
-        $SSOBaseURL = 'http://localhost:8080/v1/';
+        $SSOBaseURL = 'http://sso.development.dealperch.com:19002/v1/';
 
         $authProvider = new GenericProvider([
             'clientId' => '374ddc0d-4e45-4517-8b6b-e82288508b4a',    // The client ID assigned to you by the provider
@@ -43,12 +43,18 @@ class RetailTest extends TestCase
             // do nothing
         }
 
-        $configuration = new Configuration(__DIR__ . '/../../credentials.cache', 'http://localhost:8082/v1/', $SSOBaseURL, 'password', 'test@dealperch.com', 'testing');
+        $configuration = new Configuration(__DIR__ . '/../../credentials.cache',
+            'http://retail-api.development.dealperch.com:19005/v1/', $SSOBaseURL, 'client_credentials',
+            'test@dealperch.com', 'testing');
 
         $this->APIClient = new Retail($authProvider, $HTTPClient, $logger, $configuration);
 
         $this->assertInstanceOf(Retail::class, $this->APIClient);
     }
+
+
+
+
 
 
     public function testSearch()

@@ -8,6 +8,7 @@ use DealPerch\Retail\Client\Grant\TrustedGrant;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Ramsey\Uuid\UuidInterface;
 
@@ -56,7 +57,7 @@ abstract class AbstractSSOEnabledAPIClient
      */
     public function updateUserIdToImpersonate(UuidInterface $userId): void
     {
-        if (!$userId->equals($this->impersonateUserId)) {
+        if (! $userId->equals($this->impersonateUserId)) {
             $this->forceClearCredentials();
         }
         $this->impersonateUserId = $userId;
@@ -76,16 +77,18 @@ abstract class AbstractSSOEnabledAPIClient
 
     public function readCachedCredentials(): ?string
     {
-        if (!is_readable($this->getConfiguration()->getCredentialCachePath())) {
-            throw new \RuntimeException(sprintf('Unable to read credential cache at, "%1$s"', $this->getConfiguration()->getCredentialCachePath()));
+        if (! is_readable($this->getConfiguration()->getCredentialCachePath())) {
+            throw new \RuntimeException(sprintf('Unable to read credential cache at, "%1$s"',
+                $this->getConfiguration()->getCredentialCachePath()));
         }
 
-        if (!is_writable($this->getConfiguration()->getCredentialCachePath())) {
-            throw new \RuntimeException(sprintf('Unable to write credential cache at, "%1$s"', $this->getConfiguration()->getCredentialCachePath()));
+        if (! is_writable($this->getConfiguration()->getCredentialCachePath())) {
+            throw new \RuntimeException(sprintf('Unable to write credential cache at, "%1$s"',
+                $this->getConfiguration()->getCredentialCachePath()));
         }
 
         $handle = fopen($this->getConfiguration()->getCredentialCachePath(), 'r');
-        if (!is_resource($handle)) {
+        if (! is_resource($handle)) {
             throw new \RuntimeException('Unable to open up the credential cache.');
         }
 
@@ -109,12 +112,13 @@ abstract class AbstractSSOEnabledAPIClient
     public function cacheCredentials(string $credentials): void
     {
 
-        if (!is_writable($this->getConfiguration()->getCredentialCachePath())) {
-            throw new \RuntimeException(sprintf('Unable to write credential cache at, "%1$s"', $this->getConfiguration()->getCredentialCachePath()));
+        if (! is_writable($this->getConfiguration()->getCredentialCachePath())) {
+            throw new \RuntimeException(sprintf('Unable to write credential cache at, "%1$s"',
+                $this->getConfiguration()->getCredentialCachePath()));
         }
 
         $handle = fopen($this->getConfiguration()->getCredentialCachePath(), 'r+');
-        if (!is_resource($handle)) {
+        if (! is_resource($handle)) {
             throw new \RuntimeException('Unable to open up the credential cache.');
         }
 
@@ -135,7 +139,7 @@ abstract class AbstractSSOEnabledAPIClient
 
     private function fetchAccessToken(): string
     {
-        if (!$this->credentials instanceof AccessToken) {
+        if (! $this->credentials instanceof AccessToken) {
             // attempt to read cached credentials
             $cachedCredentialsAsArr = json_decode($this->readCachedCredentials() ?? '', true);
             if (is_array($cachedCredentialsAsArr)) {
@@ -162,15 +166,22 @@ abstract class AbstractSSOEnabledAPIClient
                 $grantOptions = [];
         }
 
-        if (!$this->credentials instanceof AccessToken) {
-            $accessToken = $this->getAuthProvider()->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(), $grantOptions);
+        if (! $this->credentials instanceof AccessToken) {
+            try {
+                $accessToken = $this->getAuthProvider()->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(),
+                    $grantOptions);
+            } catch (IdentityProviderException $e) {
+                throw new \RuntimeException($e->getMessage() . ' - ' . $e->getResponseBody()['hint'] ?? 'no hint provided');
+            }
+
             $this->credentials = $accessToken;
             $this->cacheCredentials(json_encode($accessToken->jsonSerialize(), JSON_PRETTY_PRINT));
         }
 
 // validate the credentials aren't expired. If they are, refresh.
         if ($this->credentials->hasExpired()) {
-            $accessToken = $this->authProvider->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(), $grantOptions);
+            $accessToken = $this->authProvider->getAccessToken($grant ?? $this->getConfiguration()->getGrantType(),
+                $grantOptions);
             $this->credentials = $accessToken;
             $this->cacheCredentials(json_encode($accessToken->jsonSerialize(), JSON_PRETTY_PRINT));
         }
